@@ -1,0 +1,92 @@
+---
+title: "Exploration"
+output: 
+  github_document:
+    html_preview: TRUE
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      message = FALSE,
+                      warning = FALSE)
+```
+
+```{r}
+source("2-code/exploration.R")
+```
+
+
+
+
+---
+
+### BASIC EXPLORATION
+
+```{r jitters, fig.height=10, fig.width=12}
+
+bgc_long %>% 
+  ggplot(aes(x = abbreviated, y = value, color = Location))+
+  geom_jitter(width = 0.3)+
+  facet_wrap(~analysis_type, scales = "free")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+
+---
+
+### CORRELATIONS AND PCAs
+
+
+---
+
+### MAPS
+
+
+```{r maps}
+
+make_map(bgc_wide, VAR = "SO4S", TITLE = "sulfate")
+make_map(bgc_wide, VAR = "TC")
+make_map(bgc_wide, VAR = "TN")
+make_map(bgc_wide, VAR = "TS")
+make_map(bgc_wide, VAR = "TKN")
+
+
+make_map(bgc_wide, VAR = "Ca")
+make_map(bgc_wide, VAR = "Mg")
+make_map(bgc_wide, VAR = "Na")
+make_map(bgc_wide, VAR = "K")
+make_map(bgc_wide, VAR = "CEC")
+make_map(bgc_wide, VAR = "Bases")
+
+make_map(bgc_wide, VAR = "Zn")
+make_map(bgc_wide, VAR = "Cu")
+
+make_map(bgc_wide, VAR = "NO3N")
+make_map(bgc_wide, VAR = "NH4N")
+
+make_map(bgc_wide, VAR = "Clay")
+make_map(bgc_wide, VAR = "Sand")
+
+make_map(bgc_wide, VAR = "WEOC")
+make_map(bgc_wide, VAR = "MBC")
+
+```
+
+
+
+
+---
+
+## Session Info 
+
+<details>
+  <summary> Session Info </summary>
+
+Date run: `r Sys.Date()`
+
+```{r}
+sessionInfo()
+```
+
+</details>
