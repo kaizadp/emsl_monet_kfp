@@ -11,8 +11,9 @@ Exploration
 
 ### CORRELATIONS AND PCAs
 
-![](exploration_files/figure-gfm/pca-1.png)<!-- -->
+**PCA** ![](exploration_files/figure-gfm/pca-1.png)<!-- -->
 
+**Correlations**
 ![](exploration_files/figure-gfm/corr_plot-1.png)<!-- -->
 
 ------------------------------------------------------------------------
