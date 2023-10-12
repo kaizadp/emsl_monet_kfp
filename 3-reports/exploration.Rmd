@@ -16,8 +16,6 @@ source("2-code/exploration.R")
 ```
 
 
-
-
 ---
 
 ### BASIC EXPLORATION
@@ -36,6 +34,14 @@ bgc_long %>%
 ---
 
 ### CORRELATIONS AND PCAs
+
+```{r pca}
+compute_pca(bgc_wide)
+```
+
+```{r corr_plot}
+compute_correlations(bgc_wide)
+```
 
 
 ---

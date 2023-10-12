@@ -10,6 +10,7 @@ library(maptools); library(sf) # for biomes
 library(ggthemes) # for theme_map
 
 options(scipen = 999) # to prevent scientific notation numbers
+theme_set(theme_bw(base_size = 12))
 
 
 # load files --------------------------------------------------------------
@@ -120,6 +121,102 @@ process_bgc_data = function(data, analysis_key, metadata_biome){
 
 bgc_long = process_bgc_data(data, analysis_key, metadata_biome)$long
 bgc_wide = process_bgc_data(data, analysis_key, metadata_biome)$wide
+
+#
+# PCAs --------------------------------------------------------------------
+
+compute_pca = function(bgc_wide){
+  library(ggbiplot)
+  
+
+  fit_pca_function = function(dat){
+    
+    dat %>% 
+      drop_na()
+    
+    num = 
+      dat %>%       
+      dplyr::select(where(is.numeric)) %>%
+      dplyr::mutate(row = row_number()) %>% 
+      drop_na()
+    
+    num_row_numbers = num %>% dplyr::select(row)
+    
+    grp = 
+      dat %>% 
+      dplyr::select(where(is.character)) %>% 
+      dplyr::mutate(row = row_number()) %>% 
+      right_join(num_row_numbers)
+    
+    
+    num = num %>% dplyr::select(-row)
+    pca_int = prcomp(num, scale. = T)
+    
+    list(num = num,
+         grp = grp,
+         pca_int = pca_int)
+  }
+  
+  ## PCA input files ----
+  pca_overall = fit_pca_function(bgc_wide %>% dplyr::select(-Lat, -Long, -GWC)) 
+  
+  ## PCA plots overall ----
+  gg_pca_overall = 
+    ggbiplot(pca_overall$pca_int, obs.scale = 1, var.scale = 1,
+             groups = as.character(pca_overall$grp$biome_name), 
+             ellipse = TRUE, circle = FALSE, var.axes = TRUE, alpha = 0) +
+    geom_point(size = 4, stroke = 1.5, alpha = 0.8,
+               aes(shape = pca_overall$grp$Location,
+                   color = groups))+ 
+    scale_shape_manual(values = c(1, 16))+
+    labs(shape="",
+         color = "",
+         title = "Overall PCA",
+         subtitle = "")+
+    NULL
+  
+  gg_pca_overall
+  
+}
+
+#
+# correlations ------------------------------------------------------------
+
+compute_correlations = function(data_combined){
+  #library(corrplot)
+  
+
+  fit_correlations_function = function(dat, TITLE){
+    num = 
+      dat %>%       
+      dplyr::select(where(is.numeric)) %>%
+      drop_na()
+    
+    num_clean = 
+      num %>% 
+      rownames_to_column("row") %>% 
+      pivot_longer(-row) %>% 
+      separate(name, sep = "_", into = c("name")) %>% 
+      pivot_wider() %>% 
+      dplyr::select(-row)
+    
+    
+    m = cor(num_clean)
+    p.mat <- ggcorrplot::cor_pmat(num_clean)
+    
+    ggcorrplot::ggcorrplot(m, type = "lower",
+                           p.mat = p.mat,
+                           outline.color = "black",
+                           #   lab = TRUE, 
+                           insig = "blank",
+                           colors = c("#E46726", "white", "#6D9EC1"),
+                           title = TITLE)
+    
+  }
+  
+  corr_all = fit_correlations_function(bgc_wide %>% dplyr::select(-Lat, -Long, -GWC), TITLE = "Only significant correlations (p <= 0.05) shown here")
+  corr_all
+}
 
 #
 # maps --------------------------------------------------------------------
