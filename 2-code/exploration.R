@@ -90,7 +90,10 @@ assign_biomes_to_meta = function(metadata){
   
   metadata_biome
 }
-metadata_biome = assign_biomes_to_meta(metadata)
+# metadata_biome = assign_biomes_to_meta(metadata) %>% dplyr::select(Site_Code, Site_Name_Long, Lat, Long, Vegetation, biome_name)
+# metadata_biome %>% write.csv("1-data/metadata_biome.csv", row.names = F, na = "")
+
+metadata_biome = read.csv("1-data/metadata_biome.csv")
 
 #
 # process data ------------------------------------------------------------
@@ -108,6 +111,19 @@ process_bgc_data = function(data, analysis_key, metadata_biome){
     drop_na() %>% 
     mutate(Site_Code = str_remove(Site_Code, "1000S_")) %>% 
     left_join(metadata_biome %>% dplyr::select(Site_Code, Lat, Long, biome_name))
+  
+#  long = 
+#    data %>% 
+#    rename(Site_Code = Sample_ID) %>% 
+#    pivot_longer(cols = -c(Site_Code, Location)) %>% 
+#    mutate(value = as.numeric(value)) %>% 
+#    left_join(analysis_key %>% dplyr::select(column, abbreviated), by = c("name" = "column")) %>% 
+#    drop_na() %>% 
+#    mutate(Site_Code = str_remove(Site_Code, "1000S_")) %>% 
+#    dplyr::select(-abbreviated) %>% 
+#    pivot_wider()
+#  long %>% write.csv("1-data/bgc_data.csv", row.names = F, na = "")
+  
   
   
   wide = 
