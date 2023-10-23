@@ -19,9 +19,17 @@ source("2-code/exploration.R")
 
 ---
 
+## ALL DATA
+
+<details>
+  <summary> Click to Open </summary>
+
+
+
+
 ### BASIC EXPLORATION
 
-```{r jitters, fig.height=10, fig.width=12}
+```{r jitters, fig.height=12, fig.width=12}
 
 bgc_long %>% 
   ggplot(aes(x = abbreviated, y = value, color = Location))+
@@ -84,7 +92,90 @@ make_map(bgc_wide, VAR = "MBC")
 ```
 
 
+</details>
 
+----
+
+
+## SUBSET DATA
+<details>
+  <summary> Session Info </summary>
+
+```{r}
+
+data2 = read_csv("1-data/bgc_data.csv") %>% dplyr::select(-Total_Sulfur_pct, -notes)
+
+bgc_long2 = process_bgc_data(data2, analysis_key, metadata_biome)$long
+bgc_wide2 = process_bgc_data(data2, analysis_key, metadata_biome)$wide
+
+```
+
+
+```{r jitters2, fig.height=12, fig.width=12}
+
+bgc_long2 %>% 
+  ggplot(aes(x = abbreviated, y = value, color = Location))+
+  geom_jitter(width = 0.3)+
+  facet_wrap(~analysis_type, scales = "free")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+
+---
+
+### CORRELATIONS AND PCAs
+
+**PCA**
+```{r pca2, fig.height=10, fig.width=12}
+compute_pca(bgc_wide2)
+```
+
+
+**Correlations**
+```{r corr_plot2}
+compute_correlations(bgc_wide2)
+```
+
+
+---
+
+### MAPS
+
+
+```{r maps2}
+
+make_map(bgc_wide2, VAR = "SO4S", TITLE = "sulfate")
+make_map(bgc_wide2, VAR = "TC")
+make_map(bgc_wide2, VAR = "TN")
+make_map(bgc_wide2, VAR = "TKN")
+
+
+make_map(bgc_wide2, VAR = "Ca")
+make_map(bgc_wide2, VAR = "Mg")
+make_map(bgc_wide2, VAR = "Na")
+make_map(bgc_wide2, VAR = "K")
+make_map(bgc_wide2, VAR = "CEC")
+make_map(bgc_wide2, VAR = "Bases")
+
+make_map(bgc_wide2, VAR = "Zn")
+make_map(bgc_wide2, VAR = "Cu")
+
+make_map(bgc_wide2, VAR = "NO3N")
+make_map(bgc_wide2, VAR = "NH4N")
+
+make_map(bgc_wide2, VAR = "Clay")
+make_map(bgc_wide2, VAR = "Sand")
+
+make_map(bgc_wide2, VAR = "WEOC")
+make_map(bgc_wide2, VAR = "MBC")
+
+```
+
+
+
+
+</details>
 
 ---
 
